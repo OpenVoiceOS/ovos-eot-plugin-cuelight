@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ovos-eot-plugin-cuelight"
+dynamic = ["version"]
+description = "CueLight end-of-turn plugin for OpenVoiceOS"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "JarbasAi", email = "jarbasai@mailfence.com" }]
+requires-python = ">=3.9"
+keywords = [
+    "eot",
+    "end-of-turn",
+    "turn-detection",
+    "endpointing",
+    "cuelight",
+    "ovos",
+    "openvoiceos",
+    "plugin",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+dependencies = [
+    "ovos-plugin-manager>=3.0.0a1",
+    "numpy<3.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov"]
+
+[project.urls]
+Homepage = "https://github.com/OpenVoiceOS/ovos-eot-plugin-cuelight"
+Repository = "https://github.com/OpenVoiceOS/ovos-eot-plugin-cuelight"
+
+[project.entry-points."opm.end_of_turn"]
+"ovos-eot-plugin-cuelight" = "ovos_eot_plugin_cuelight:CueLightEndOfTurn"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["ovos_eot_plugin_cuelight*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "ovos_eot_plugin_cuelight.version.__version__" }
