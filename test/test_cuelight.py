@@ -146,6 +146,17 @@ class TestCueLightEndOfTurn(unittest.TestCase):
         decision = engine.update(_int16_bytes(FRAME_LENGTH))
         self.assertFalse(decision.ended)
 
+    def test_update_accepts_chunk_context(self):
+        from ovos_plugin_manager.templates.eot import ChunkContext
+
+        engine = CueLightEndOfTurn()
+        engine._ep.next_result = True
+        context = ChunkContext(is_speech=True)
+        decision = engine.update(_int16_bytes(FRAME_LENGTH), context)
+        self.assertTrue(decision.ended)
+        self.assertAlmostEqual(engine.get_probability(
+            _int16_bytes(FRAME_LENGTH), context), 0.9)
+
     def test_ended_latches_within_chunk(self):
         engine = CueLightEndOfTurn()
         engine._ep.next_result = True

@@ -12,7 +12,11 @@ listener can end a voice command when the user finished speaking.
 from __future__ import annotations
 
 import numpy as np
-from ovos_plugin_manager.templates.eot import EndOfTurnDecision, EndOfTurnEngine
+from ovos_plugin_manager.templates.eot import (
+    ChunkContext,
+    EndOfTurnDecision,
+    EndOfTurnEngine,
+)
 
 #: CueLight re-frames internally, so input chunks of any length are accepted,
 #: but its model runs on 20 ms frames at 16 kHz.
@@ -117,11 +121,16 @@ class CueLightEndOfTurn(EndOfTurnEngine):
             self._buffer = self._buffer[self._frame_length:]
             yield frame
 
-    def update(self, chunk: bytes) -> EndOfTurnDecision:
+    def update(self, chunk: bytes,
+               context: ChunkContext | None = None) -> EndOfTurnDecision:
         """Feed a chunk and return the end-of-turn decision.
+
+        CueLight decides from the audio itself, so it ignores ``context``.
 
         Parameters:
             chunk (bytes): 16-bit PCM, mono, 16 kHz. Any length.
+            context (ChunkContext | None): the listener's per-chunk context.
+                Ignored.
 
         Returns:
             EndOfTurnDecision: the decision for this chunk. ``ended`` is True
@@ -136,9 +145,10 @@ class CueLightEndOfTurn(EndOfTurnEngine):
             ended=ended,
         )
 
-    def get_probability(self, chunk: bytes) -> float:
+    def get_probability(self, chunk: bytes,
+                        context: ChunkContext | None = None) -> float:
         """Feed a chunk and return only the current end-of-turn probability."""
-        return self.update(chunk).p_end
+        return self.update(chunk, context).p_end
 
     @property
     def p_end(self) -> float:
